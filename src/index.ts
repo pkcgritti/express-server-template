@@ -3,7 +3,7 @@ import './db'
 import Repositories from './repositories'
 
 Repositories.User.create({
-  email: 'cesargritti@gmail.com',
+  email: 'gritti123123@123123.com',
   password: '123123',
   username: 'gritti'
 }).then(user => {
