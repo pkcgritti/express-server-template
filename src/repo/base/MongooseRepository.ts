@@ -1,8 +1,8 @@
 import { Model, DocumentQuery, Document, Aggregate, Query, ModelUpdateOptions } from 'mongoose'
-import { Writable, Readable } from '../interfaces'
+import { Writer, Reader } from '../interfaces'
 import { autoBind } from '../../helpers'
 
-abstract class MongooseRepository<Custom, Native extends Document> implements Writable<Custom>, Readable<Custom> {
+abstract class MongooseRepository<Custom, Native extends Document> implements Writer<Custom>, Reader<Custom> {
   private model: Model<Native>
 
   constructor (model: Model<Native>) {

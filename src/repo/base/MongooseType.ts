@@ -1,10 +1,12 @@
 import 'reflect-metadata'
+import * as mongoose from 'mongoose'
 
-export abstract class MongooseBaseModel {
+export abstract class MongooseType {
   public getSchema () {
     var schema = Reflect.getMetadata('schema', this)
     console.log(schema)
-  } 
+    return schema
+  }
 }
 
 export function basicField (options?: any) {
@@ -16,7 +18,7 @@ export function basicField (options?: any) {
     if (!schema) schema = {}
     schema[propName] = { type: type, ...options }
     Reflect.defineMetadata('schema', schema, target)
-    Reflect.defineMetadata('schema:' + target.constructor.name, schema, MongooseBaseModel)
+    Reflect.defineMetadata('schema:' + target.constructor.name, schema, MongooseType)
   }
 }
 
@@ -36,13 +38,17 @@ export function objectField (fieldType: Function, options?: any) {
   return function (target: any, propName: string) {
     var type = Reflect.getMetadata('design:type', target, propName)
     // console.log(`${propName}: ${fieldType.name} Object`)
-    var foreing_schema = Reflect.getMetadata('schema:' + fieldType.name, MongooseBaseModel)
+    var foreing_schema = Reflect.getMetadata('schema:' + fieldType.name, MongooseType)
     var schema = Reflect.getMetadata('schema', target)
     if (!schema) schema = {}
     schema[propName] = { ...foreing_schema }
     Reflect.defineMetadata('schema', schema, target)
-    Reflect.defineMetadata('schema:' + target.constructor.name, schema, MongooseBaseModel)
+    Reflect.defineMetadata('schema:' + target.constructor.name, schema, MongooseType)
   }
 }
 
-export default MongooseBaseModel
+export function ModelBuilder<T extends MongooseType> (connection: mongoose.Connection, type: T) {
+  
+}
+
+export default MongooseType

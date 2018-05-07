@@ -1,24 +1,32 @@
-import { MongooseBaseModel, basicField, arrayField, objectField } from '../base/MongooseModel';
+import { MongooseType, basicField, arrayField, objectField, ModelBuilder } from '../base/MongooseType'
+import MongooseRepository from '../base/MongooseRepository'
+import { Document, Model, Connection } from 'mongoose'
+import { SemiPartialJoiner, Omit } from '../../helpers/types'
 
-class UserModel extends MongooseBaseModel {
-  @basicField()
+export class UserType extends MongooseType {
+  @basicField({ required: true })
   username: string
-
   @basicField()
   password: string
-
   @basicField()
   firstName: string
-
   @basicField()
   lastName: string
-
   @basicField()
   email: string
 }
 
-type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T]
-type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>
-type UserType = { [K in keyof UserModel]: UserModel[K] }
-type A = Omit<UserModel, 'getSchema'>
+export class UserRepository extends MongooseRepository<UserType, UserType & Document> {
+  constructor (model: Model<UserType & Document>) {
+    super(model)
+  }
+}
+
+export default function (connection: Connection) {
+  const TypeInstance = new UserType()
+  const schema = TypeInstance.getSchema()
+  const model = connection.model<UserType & Document>('User', schema)
+  return new UserRepository(model)
+}
+
 
