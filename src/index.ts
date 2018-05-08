@@ -1,33 +1,10 @@
-import './db'
+import Repositories from './repositories'
 
-// import Repo from './repo'
+Repositories.User.find()
+  .then(users => {
+    users.forEach(user => {
+      console.log(`${user.username} with password ${user.password} with email ${user.email ? user.email.value : ''}`)
+    })
+  })
 
-import { MongooseType, basicField, arrayField, objectField, ModelBuilder } from './repo/base/MongooseType';
-
-class StreetType extends MongooseType {
-  @basicField()
-  number: number
-  @basicField()
-  name: string
-}
-
-class AddressType extends MongooseType {
-  @basicField()
-  city: string
-  @objectField(StreetType)
-  street: StreetType
-}
-
-class UserType extends MongooseType {
-  @basicField()
-  username: string
-  @basicField()
-  password: string
-  @arrayField(String)
-  tags: string[]
-  @objectField(AddressType)
-  address: AddressType
-}
-
-let u = new UserType()
-u.getSchema()
+Repositories.User.createOne({ username: 'cesargritti', password: '123123', email: { value: 'cesargritti@gmail.com' } })
